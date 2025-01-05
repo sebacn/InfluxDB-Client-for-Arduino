@@ -57,18 +57,21 @@ InfluxDBClient::InfluxDBClient(const String &serverUrl, const String &db):Influx
     setConnectionParamsV1(serverUrl, db);
 }
 
-InfluxDBClient::InfluxDBClient(const String &serverUrl, const String &org, const String &bucket, const String &authToken):InfluxDBClient(serverUrl, org, bucket, authToken, nullptr) { 
+InfluxDBClient::InfluxDBClient(const String &serverUrl, const String &org, const String &bucket, const String &authToken):InfluxDBClient(serverUrl, org, bucket, authToken, nullptr, nullptr, nullptr) { 
 }
 
-InfluxDBClient::InfluxDBClient(const String &serverUrl, const String &org, const String &bucket, const String &authToken, const char *serverCert):InfluxDBClient() {
-    setConnectionParams(serverUrl, org, bucket, authToken, serverCert);
+InfluxDBClient::InfluxDBClient(const String &serverUrl, const String &org, const String &bucket, const String &authToken, const char *serverCert):InfluxDBClient(serverUrl, org, bucket, authToken, serverCert, nullptr, nullptr) {
+}
+
+InfluxDBClient::InfluxDBClient(const String &serverUrl, const String &org, const String &bucket, const String &authToken, const char *serverCert, const char *mtls_certificate, const char *mtls_private_key):InfluxDBClient() {
+    setConnectionParams(serverUrl, org, bucket, authToken, serverCert, mtls_certificate, mtls_private_key);
 }
 
 void InfluxDBClient::setInsecure(bool value){
   _connInfo.insecure = value;
 }
 
-void InfluxDBClient::setConnectionParams(const String &serverUrl, const String &org, const String &bucket, const String &authToken, const char *certInfo) {
+void InfluxDBClient::setConnectionParams(const String &serverUrl, const String &org, const String &bucket, const String &authToken, const char *certInfo, const char *mtls_certificate, const char *mtls_private_key) {
     clean();
     _connInfo.serverUrl = serverUrl;
     _connInfo.bucket = bucket;
@@ -76,6 +79,8 @@ void InfluxDBClient::setConnectionParams(const String &serverUrl, const String &
     _connInfo.authToken = authToken;
     _connInfo.certInfo = certInfo;
     _connInfo.dbVersion = 2;
+    _connInfo.mtls_certificate = mtls_certificate;
+    _connInfo.mtls_private_key = mtls_private_key;
 }
 
 void InfluxDBClient::setConnectionParamsV1(const String &serverUrl, const String &db, const String &user, const String &password, const char *certInfo) {

@@ -32,6 +32,15 @@ HTTPService::HTTPService(ConnectionInfo *pConnInfo):_pConnInfo(pConnInfo) {
          wifiClientSec->setFingerprint(pConnInfo->certInfo);
       }
     }
+
+    if(pConnInfo->mtls_certificate && strlen_P(pConnInfo->mtls_certificate) > 0
+    && pConnInfo->mtls_private_key && strlen_P(pConnInfo->mtls_private_key) > 0) 
+    { 
+      BearSSL::X509List *serverCertList = new BearSSL::X509List(pConnInfo->mtls_certificate);
+      BearSSL::PrivateKey *serverPrivKey = new BearSSL::PrivateKey(pConnInfo->mtls_private_key);
+      wifiClientSec->setClientRSACert(serverCertList, serverPrivKey);
+    }    
+
     checkMFLN(wifiClientSec, pConnInfo->serverUrl);
 #elif defined(ESP32)
     WiFiClientSecure *wifiClientSec = new WiFiClientSecure;  
@@ -43,6 +52,14 @@ HTTPService::HTTPService(ConnectionInfo *pConnInfo):_pConnInfo(pConnInfo) {
     } else if(pConnInfo->certInfo && strlen_P(pConnInfo->certInfo) > 0) { 
       wifiClientSec->setCACert(pConnInfo->certInfo);
     }
+
+    if(pConnInfo->mtls_certificate && strlen_P(pConnInfo->mtls_certificate) > 0
+    && pConnInfo->mtls_private_key && strlen_P(pConnInfo->mtls_private_key) > 0) 
+    { 
+      wifiClientSec->setCertificate(pConnInfo->mtls_certificate);
+      wifiClientSec->setPrivateKey(pConnInfo->mtls_private_key);
+    }
+
 #endif    
     _wifiClient = wifiClientSec;
   } else {

@@ -72,6 +72,15 @@ class InfluxDBClient {
     // authToken - InfluxDB 2 authorization token
     // certInfo - InfluxDB 2 server trusted certificate (or CA certificate) or certificate SHA1 fingerprint. Should be stored in PROGMEM.
     InfluxDBClient(const String &serverUrl, const String &org, const String &bucket, const String &authToken, const char *certInfo);
+    // Creates InfluxDBClient instance for secured connection
+    // serverUrl - url of the InfluxDB 2 server (e.g. https://localhost:8086)
+    // org - name of the organization, which bucket belongs to 
+    // bucket - name of the bucket to write data into
+    // authToken - InfluxDB 2 authorization token
+    // certInfo - InfluxDB 2 server trusted certificate (or CA certificate) or certificate SHA1 fingerprint. Should be stored in PROGMEM.
+    // mtls_certificate - mTLS secure authentication connection - certificate
+    // mtls_private_key - mTLS secure authentication connection - private key
+    InfluxDBClient(const String &serverUrl, const String &org, const String &bucket, const String &authToken, const char *certInfo, const char *mtls_certificate, const char *mtls_private_key);
     // Clears instance.
     ~InfluxDBClient();
     // Allows insecure connection by skiping server certificate validation. 
@@ -107,7 +116,9 @@ class InfluxDBClient {
     // bucket - name of the bucket to write data into
     // authToken - InfluxDB 2 authorization token
     // serverCert - Optional. InfluxDB 2 server trusted certificate (or CA certificate) or certificate SHA1 fingerprint.  Should be stored in PROGMEM. Only in case of https connection.
-    void setConnectionParams(const String &serverUrl, const String &org, const String &bucket, const String &authToken, const char *certInfo = nullptr);
+    // mtls_certificate - mTLS secure authentication connection - certificate
+    // mtls_private_key - mTLS secure authentication connection - private key
+    void setConnectionParams(const String &serverUrl, const String &org, const String &bucket, const String &authToken, const char *certInfo = nullptr,  const char *mtls_certificate = nullptr, const char *mtls_private_key = nullptr);
     // Sets parameters for connection to InfluxDB 1
     // Must be called before calling any method initiating a connection to server.
     // serverUrl - url of the InfluxDB server (e.g. http://localhost:8086)

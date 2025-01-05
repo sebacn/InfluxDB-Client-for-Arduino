@@ -66,6 +66,11 @@ struct ConnectionInfo {
     String lastError;
     // HTTP options
     HTTPOptions httpOptions;
+
+    // mTLS certificates
+    const char *mtls_private_key; 
+    const char *mtls_certificate;
+ 
 };
 
 /**
